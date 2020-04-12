@@ -1,0 +1,380 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Autonomous Route following system for small degree routes</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-12"><meta name="DC.source" content="Untitled.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Autonomous Route following system for small degree routes</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem Definition:</a></li><li><a href="#2">Problem Solution :</a></li><li><a href="#3">My system:</a></li><li><a href="#4">Mechanical Equation of our system</a></li><li><a href="#5">To  make linearization, we assumed that</a></li><li><a href="#6">System After Linearization</a></li><li><a href="#7">First part of project:</a></li><li><a href="#8">Second part of project</a></li><li><a href="#9">Third part of project</a></li><li><a href="#13">RESULT:</a></li></ul></div><h2 id="1">Problem Definition:</h2><p>In real world, we have a lot of straight highways. In this highways, we do not need to make an movement to drive. We can just start our cruise control and lock our cars' wheel. Do you think that it is simple?. Actually there is not any highways, which is 100 percent straight. Because of this situation we can not lock our the wheel of our autos and can not go straight</p><h2 id="2">Problem Solution :</h2><p>To lock our wheel and watch the route, we can design a controller and our system can follow our routes autonomusly for small degree. For example our system can follow small sinus signal. You can see our system.We assumed that it is unicycle robot. We are going to adjust our robots' angle via controlling angular accelartion</p><h2 id="3">My system:</h2><pre class="codeinput">imshow(imread(<span class="string">'system.jpg'</span>))
+</pre><img vspace="5" hspace="5" src="Untitled_01.png" alt=""> <h2 id="4">Mechanical Equation of our system</h2><p><img src="Untitled_eq12543291903835114586.png" alt="$$ Ay = A*sin(Q) $$" style="width:105px;height:15px;"></p><p><img src="Untitled_eq08403730263276941499.png" alt="$$ Ax = A*cos(Q) $$" style="width:106px;height:15px;"></p><p><img src="Untitled_eq05465219627932219999.png" alt="$$ \frac{d v(t)}{d t} =A $$" style="width:64px;height:31px;"></p><p><img src="Untitled_eq03902166841353049399.png" alt="$$ \frac{d X(t)}{d t} =V $$" style="width:71px;height:31px;"></p><p><img src="Untitled_eq16556659241707094867.png" alt="$$ \frac{d Q(t)}{d t} =W $$" style="width:73px;height:31px;"></p><p><img src="Untitled_eq15758905898991892752.png" alt="$$ \frac{d w(t)}{d t} =a $$" style="width:64px;height:31px;"></p><p><img src="Untitled_eq13148132881126609988.png" alt="$$ tan(Q)=Vy/Vx $$" style="width:111px;height:15px;"></p><p><img src="Untitled_eq05322176601116135789.png" alt="$$ tan(w) = Ay/Ax $$" style="width:107px;height:15px;"></p><p><img src="Untitled_eq08403730263276941499.png" alt="$$ Ax = A*cos(Q) $$" style="width:106px;height:15px;"></p><h2 id="5">To  make linearization, we assumed that</h2><p>Our system is going to make control for small degree routes</p><p><img src="Untitled_eq18222969881826960111.png" alt="$$ sin(Q)=Q $$" style="width:74px;height:15px;"></p><p><img src="Untitled_eq04332269694563920249.png" alt="$$ cos(Q)=1$$" style="width:69px;height:15px;"></p><h2 id="6">System After Linearization</h2><p>we assummed velocity = 80 km/hour and delta T=0.001sn <img src="Untitled_eq02236905106306100034.png" alt="$$ K=0 a(k+1)=a(k), w(K+1)=w(k)+a(k) Q(k+1)=Q(k+1)=Q(k)+W(k)+A(k)/2 $$" style="width:601px;height:15px;"> We found our state space vecktors Am,Bm,Cm,Dm</p><pre class="codeinput">Am = [ 1 1 1/2;0 1 1;0 0 1]
+Bm = [0 ; 0; 1/80]
+Cm = [1 0 0]
+Dm = 1
+system=ss(Am,Bm,Cm,Dm);
+</pre><pre class="codeoutput">
+Am =
+
+    1.0000    1.0000    0.5000
+         0    1.0000    1.0000
+         0         0    1.0000
+
+
+Bm =
+
+         0
+         0
+    0.0125
+
+
+Cm =
+
+     1     0     0
+
+
+Dm =
+
+     1
+
+</pre><h2 id="7">First part of project:</h2><p>You can see our system result without any controller and Kalman filter, In this part we see that for one degree mistake our system going to make 1 meter mistake.</p><pre class="codeinput">u=ones(1,10000)*0.0001;
+t = linspace(0,10,10000);
+systemout=sin(lsim(system,u,t));
+figure()
+plot(t,systemout)
+title(<span class="string">'system result in matlab '</span>)
+<span class="comment">%In simulink</span>
+model = sim(<span class="string">'projemodel1.slx'</span>);
+value = model.systemout;
+figure()
+plot(value)
+title(<span class="string">'System result in Symulink'</span>)
+</pre><img vspace="5" hspace="5" src="Untitled_02.png" alt=""> <img vspace="5" hspace="5" src="Untitled_03.png" alt=""> <h2 id="8">Second part of project</h2><p>We linearize our system like: (In small degree of Q), <img src="Untitled_eq18222969881826960111.png" alt="$$ sin(Q)=Q $$" style="width:74px;height:15px;"></p><p><img src="Untitled_eq11697744668911348437.png" alt="$$ cos(Q)=1$" style="width:69px;height:15px;">$ Our system result like nonlinearsystem=sin(lsim(system))</p><pre class="codeinput"><span class="comment">%Beacause of this situation We can take our linear system results</span>
+<span class="comment">% X1 is angle of kalman filter, X2 is angler velocity of kalman filter  and X3 is angular accelariton of kalman filterand</span>
+<span class="comment">% y1 is kalman filter results as angle of kalman filer. Y1 and X1 are same.</span>
+Aml = system.A;
+Bml = system.B;
+Cml = system.C;
+Dml = system.D;
+systeml = ss(Aml,Bml,Cml,Dml);
+sysTum = ss(Aml,[Bml Bml], Cml, [Dml 1]);
+<span class="comment">% Secon part result in matlab</span>
+u = u +0.000001*randn(size(u));
+y2 = systemout +0.1* randn(size(u))';
+u=u';
+KalmanLin1 = kalman(sysTum,1,1);
+KalmanLin2 = kalman(sysTum,1,2);
+KalmanLin3 = kalman(sysTum,2,1);
+figure()
+lsim(KalmanLin1,[u y2],t)
+title(<span class="string">'Q=1 R=1 in matlab'</span>)
+figure()
+lsim(KalmanLin2,[u y2],t)
+title(<span class="string">'Q=1 R=2 in matlab'</span>)
+figure()
+lsim(KalmanLin3,[u y2],t)
+title(<span class="string">'Q=2 R=1 in matlab'</span>)
+<span class="comment">% Simulink results</span>
+model = sim(<span class="string">'projemodel2.slx'</span>);
+Kalman21 = model.kalman21;
+Kalman11 = model.kalman11;
+Kalman12 = model.kalman12;
+sistemout = model.Sistemout;
+figure()
+subplot(4,1,1)
+plot(Kalman21)
+title(<span class="string">' Q = 2 R=1'</span>)
+subplot(4,1,2)
+plot(Kalman11)
+title(<span class="string">' Q = 1 R=1'</span>)
+subplot(4,1,3)
+plot(Kalman12)
+title(<span class="string">' Q = 1 R=2'</span>)
+subplot(4,1,4)
+plot(sistemout)
+title(<span class="string">'Orjinal sistem'</span>)
+</pre><img vspace="5" hspace="5" src="Untitled_04.png" alt=""> <img vspace="5" hspace="5" src="Untitled_05.png" alt=""> <img vspace="5" hspace="5" src="Untitled_06.png" alt=""> <img vspace="5" hspace="5" src="Untitled_07.png" alt=""> <h2 id="9">Third part of project</h2><p>In this part we will going to desing below control system in sumilik. We will apply our system kalman filter and then we use LQI control system. Because of our sin and cos linear assumption, our system can work &lt;0.001 degree or &gt;0.001 degree. Otherwise our linear assumpition is not going to work and our system could result false. Because of this situation our limit is restiricted. We enter our system the degree, which we want to have and our system adjust it angular acceration and It is going to be ended up with desired angle. You can see my system:</p><pre class="codeinput">figure()
+imshow(imread(<span class="string">'controlsystem.jpeg'</span>))
+</pre><img vspace="5" hspace="5" src="Untitled_08.png" alt=""> <p>First we will find our LQR VAlUE</p><pre class="codeinput">Q =1* eye(3);
+R = 1;
+K = lqr(systeml,Q,R);
+<span class="comment">%kapal? &ccedil;evrim sistemimiz cevab?</span>
+G= ss(Am-Bm*K , zeros(size(Bm)) ,Cm-Dm*K ,zeros(size(Dm)));
+</pre><p>As you can see our system saw 0.001 degree angle and its control ?ts control system makes its angle on degree.</p><pre class="codeinput">initial(G,[0.0001 0 0])
+ylabel(<span class="string">'0.000Xdegre'</span>)
+xlabel(<span class="string">'t(s)'</span>)
+<span class="comment">%%Third part of project Simulink</span>
+<span class="comment">% Then we initilize K value to our system and we design our system.</span>
+<span class="comment">% For making easier simulink design, we initilize our state space in</span>
+<span class="comment">% sumilink as:</span>
+<span class="comment">% Close loop space state values(Am-Bm*K , zeros(size(Bm)) ,Cm-Dm*K ,</span>
+<span class="comment">% zeros(size(Dm)) for Am,Bm,Cm,Dm   are initilized our system</span>
+<span class="comment">% otherise if we did not initilize our state as close loop</span>
+<span class="comment">% we should draw close loop system. This one is more easy</span>
+initilizecondition = [0.00001 0 0 ]
+model = sim(<span class="string">'projemodel3.slx'</span>);
+linearout = model.Linearout;
+nonlinearout = model.nonlinearout;
+figure()
+plot(linearout)
+ylabel(<span class="string">'angle'</span>)
+title(<span class="string">'linearout'</span>)
+figure()
+plot(nonlinearout)
+title(<span class="string">'non-linearout'</span>)
+</pre><pre class="codeoutput">
+initilizecondition =
+
+   1.0e-05 *
+
+    1.0000         0         0
+
+Warning: Output port 1 of 'projemodel3/Kalman Filter' is not connected. 
+Warning: Output port 1 of 'projemodel3/Kalman Filter1' is not connected. 
+</pre><p><img src="Untitled_eq17467035999183504765.png" alt="$$e^{\pi i} + 1 = 0$$" style="width:69px;height:15px;"></p><pre class="codeinput">ylabel(<span class="string">'angle'</span>)
+</pre><h2 id="13">RESULT:</h2><p>We made one system regulation system, which can follow small angle route which adjusts its acceration in direction-y and direction-x and then our system has input angular acceration and our system uses this angular aceration to adjust its angle. To understande you can look sumary image Our car folows the route like that:</p><pre class="codeinput">imshow(imread(<span class="string">'Result.JPEG'</span>))
+</pre><img vspace="5" hspace="5" src="Untitled_11.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Autonomous Route following system for small degree routes
+%% Problem Definition:
+% In real world, we have a lot of straight highways. In this highways, we
+% do not need to make an movement to drive. We can just start our cruise
+% control and lock our cars' wheel. Do you think that it is
+% simple?. Actually there is not any highways, which is 100 percent
+% straight. Because of this situation we can not lock our the wheel of our
+% autos and can not go straight
+%% Problem Solution :
+% To lock our wheel and watch the route, we can design a controller and 
+% our system can follow our routes autonomusly for small degree. For
+% example our system can follow small sinus signal.
+% You can see our system.We assumed that it is unicycle robot.
+% We are going to adjust our robots' angle via controlling angular
+% accelartion
+
+%% My system: 
+imshow(imread('system.jpg'))
+%% Mechanical Equation of our system
+% $$ Ay = A*sin(Q) $$
+%
+% $$ Ax = A*cos(Q) $$
+%
+% $$ \frac{d v(t)}{d t} =A $$
+%
+% $$ \frac{d X(t)}{d t} =V $$
+%
+% $$ \frac{d Q(t)}{d t} =W $$
+%
+% $$ \frac{d w(t)}{d t} =a $$
+%
+% $$ tan(Q)=Vy/Vx $$
+%
+% $$ tan(w) = Ay/Ax $$
+%
+% $$ Ax = A*cos(Q) $$
+%
+%% To  make linearization, we assumed that 
+% Our system is going to make control for small degree routes
+%
+% $$ sin(Q)=Q $$
+%
+% $$ cos(Q)=1$$
+%% System After Linearization
+% we assummed velocity = 80 km/hour and delta T=0.001sn
+% $$ K=0 a(k+1)=a(k), w(K+1)=w(k)+a(k) Q(k+1)=Q(k+1)=Q(k)+W(k)+A(k)/2 $$
+% We found our state space vecktors Am,Bm,Cm,Dm
+Am = [ 1 1 1/2;0 1 1;0 0 1]
+Bm = [0 ; 0; 1/80]
+Cm = [1 0 0]
+Dm = 1
+system=ss(Am,Bm,Cm,Dm);
+%% First part of project:
+% You can see our system result without any controller and Kalman filter,
+% In this part we see that for one degree mistake our system going to make
+% 1 meter mistake.
+u=ones(1,10000)*0.0001;
+t = linspace(0,10,10000);
+systemout=sin(lsim(system,u,t));
+figure()
+plot(t,systemout)
+title('system result in matlab ')
+%In simulink
+model = sim('projemodel1.slx');
+value = model.systemout;
+figure()
+plot(value)
+title('System result in Symulink')
+%% Second part of project
+% We linearize our system like:
+% (In small degree of Q), 
+% $$ sin(Q)=Q $$
+%
+% $$ cos(Q)=1$$
+% Our system result like nonlinearsystem=sin(lsim(system))
+%Beacause of this situation We can take our linear system results
+% X1 is angle of kalman filter, X2 is angler velocity of kalman filter  and X3 is angular accelariton of kalman filterand
+% y1 is kalman filter results as angle of kalman filer. Y1 and X1 are same. 
+Aml = system.A;
+Bml = system.B;
+Cml = system.C;
+Dml = system.D;
+systeml = ss(Aml,Bml,Cml,Dml);
+sysTum = ss(Aml,[Bml Bml], Cml, [Dml 1]);
+% Secon part result in matlab
+u = u +0.000001*randn(size(u));
+y2 = systemout +0.1* randn(size(u))';
+u=u';
+KalmanLin1 = kalman(sysTum,1,1);
+KalmanLin2 = kalman(sysTum,1,2);
+KalmanLin3 = kalman(sysTum,2,1);
+figure()
+lsim(KalmanLin1,[u y2],t)
+title('Q=1 R=1 in matlab')
+figure()
+lsim(KalmanLin2,[u y2],t)
+title('Q=1 R=2 in matlab')
+figure()
+lsim(KalmanLin3,[u y2],t)
+title('Q=2 R=1 in matlab')
+% Simulink results
+model = sim('projemodel2.slx');
+Kalman21 = model.kalman21;
+Kalman11 = model.kalman11;
+Kalman12 = model.kalman12;
+sistemout = model.Sistemout;
+figure()
+subplot(4,1,1)
+plot(Kalman21)
+title(' Q = 2 R=1')
+subplot(4,1,2)
+plot(Kalman11)
+title(' Q = 1 R=1')
+subplot(4,1,3)
+plot(Kalman12)
+title(' Q = 1 R=2')
+subplot(4,1,4)
+plot(sistemout)
+title('Orjinal sistem')
+
+
+
+%% Third part of project
+% In this part we will going to desing below control system in sumilik. We
+% will apply our system kalman filter and then we use LQI control system.
+% Because of our sin and cos linear assumption, our system can work
+% <0.001 degree or >0.001 degree. Otherwise our linear assumpition is not
+% going to work and our system could result false. Because of this
+% situation our limit is restiricted. We enter our system the degree, which
+% we want to have and our system adjust it angular acceration and It is
+% going to be ended up with desired angle. You can see my system:
+figure()
+imshow(imread('controlsystem.jpeg'))
+%%
+% First we will find our LQR VAlUE
+Q =1* eye(3);
+R = 1;
+K = lqr(systeml,Q,R);
+%kapal? çevrim sistemimiz cevab?
+G= ss(Am-Bm*K , zeros(size(Bm)) ,Cm-Dm*K ,zeros(size(Dm)));
+
+%%
+% As you can see our system saw 0.001 degree angle and its control
+% ?ts control system makes its angle on degree.
+initial(G,[0.0001 0 0])
+ylabel('0.000Xdegre')
+xlabel('t(s)')
+%%Third part of project Simulink
+% Then we initilize K value to our system and we design our system.
+% For making easier simulink design, we initilize our state space in
+% sumilink as:
+% Close loop space state values(Am-Bm*K , zeros(size(Bm)) ,Cm-Dm*K ,
+% zeros(size(Dm)) for Am,Bm,Cm,Dm   are initilized our system
+% otherise if we did not initilize our state as close loop 
+% we should draw close loop system. This one is more easy
+initilizecondition = [0.00001 0 0 ]
+model = sim('projemodel3.slx');
+linearout = model.Linearout;
+nonlinearout = model.nonlinearout;
+figure()
+plot(linearout)
+ylabel('angle')
+title('linearout')
+figure()
+plot(nonlinearout)
+title('non-linearout')
+%%
+% 
+% $$e^{\pi i} + 1 = 0$$
+% 
+ylabel('angle')
+%% RESULT:
+% We made one system regulation system, which can follow small angle route
+% which adjusts its acceration in direction-y and direction-x and then
+% our system has input angular acceration and our system uses this angular
+% aceration to adjust its angle.
+% To understande you can look sumary image
+% Our car folows the route like that:
+imshow(imread('Result.JPEG'))
+
+
+
+##### SOURCE END #####
+--></body></html>
