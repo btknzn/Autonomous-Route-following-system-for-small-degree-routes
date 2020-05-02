@@ -4,6 +4,6 @@ In real world, we have a lot of straight highways. In this highways, we do not n
 To understand better the project, you can look:
 https://github.com/btknzn/Autonomous-Route-following-system-for-small-degree-routes/blob/master/515projerapor%20(2).pdf
 
-or you can also look to Turkisch version:
+or you can also look to Turkish version:
 
 https://github.com/btknzn/Autonomous-Route-following-system-for-small-degree-routes/blob/master/BATUKAANOZEN141201079rapor.pdf
